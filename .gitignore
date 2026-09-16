@@ -1,0 +1,9 @@
+bab 1.py
+bab_1_python_core_for_ai.zip
+.gitignore
+
+.venv/
+__pycache__
+.env
+.vscode
+Python-for-Gen-AI.pdf
