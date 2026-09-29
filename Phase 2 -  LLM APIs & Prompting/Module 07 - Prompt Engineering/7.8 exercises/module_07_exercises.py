@@ -36,5 +36,43 @@ def safe_json_parse(text: str) -> dict:
         return json.loads(raw)
 
 if __name__ == "__main__":
+    # Exercise 3: automatic JSON repair demo
     fenced_example = "```json\n{\"status\": \"success\", \"items\": [1, 2, 3]}\n```"
     print("Parsed JSON:", safe_json_parse(fenced_example))
+
+    # Exercise 2: PromptLibrary save/load to JSON
+    @dataclass
+    class SimpleTemplate:
+        name: str
+        system: str
+        user: str
+        version: str = "1.0"
+
+    library = PromptLibrary()
+    library.register(SimpleTemplate(
+        name="code_review_basic",
+        system=BASIC_PROMPT,
+        user="Review this code: {code}",
+        version="1.0",
+    ))
+    library.register(SimpleTemplate(
+        name="code_review_intermediate",
+        system=INTERMEDIATE_PROMPT,
+        user="Review this code: {code}",
+        version="1.0",
+    ))
+    library.register(SimpleTemplate(
+        name="code_review_expert",
+        system=EXPERT_PROMPT,
+        user="Review this code: {code}",
+        version="1.0",
+    ))
+
+    OUTPUT_PATH = "prompts.json"
+    library.save_to_json(OUTPUT_PATH)
+    print(f"\nSaved {len(library._templates)} templates to '{OUTPUT_PATH}'")
+
+    # Verify round-trip: load back and print keys
+    loaded = PromptLibrary()
+    loaded.load_from_json(OUTPUT_PATH)
+    print(f"Loaded templates: {list(loaded._templates.keys())}")

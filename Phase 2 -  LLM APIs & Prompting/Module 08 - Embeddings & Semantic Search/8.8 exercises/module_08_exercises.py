@@ -75,7 +75,7 @@ def embed_with_cache(text: str, model: str = "nvidia/llama-nemotron-embed-vl-1b-
         conn.close()
         return json.loads(row[0])
 
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), base_url="https://openrouter.ai/api/v1")
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), base_url="https://openrouter.ai/api/v1")  
     resp = client.embeddings.create(input=[text], model=model)
     emb = resp.data[0].embedding
     

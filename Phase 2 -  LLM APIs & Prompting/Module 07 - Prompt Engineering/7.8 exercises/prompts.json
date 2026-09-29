@@ -1,0 +1,20 @@
+{
+  "code_review_basic": {
+    "name": "code_review_basic",
+    "system": "Review this code for bugs.",
+    "user": "Review this code: {code}",
+    "version": "1.0"
+  },
+  "code_review_intermediate": {
+    "name": "code_review_intermediate",
+    "system": "You are a code reviewer. Find bugs and suggest fixes with code.",
+    "user": "Review this code: {code}",
+    "version": "1.0"
+  },
+  "code_review_expert": {
+    "name": "code_review_expert",
+    "system": "You are a Principal Software Engineer conducting a strict code review.\nEvaluate code for correctness, security, performance, and maintainability.\nFormat as: Issue -> Impact -> Fix.",
+    "user": "Review this code: {code}",
+    "version": "1.0"
+  }
+}
