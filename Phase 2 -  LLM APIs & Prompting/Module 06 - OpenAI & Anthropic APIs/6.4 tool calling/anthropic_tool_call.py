@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", "mock-key"))
+client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], base_url="https://api.xkiro.com")
 
 # 1. Define the tool schema
 tools = [
@@ -37,7 +37,7 @@ def get_model_info(model_name: str) -> dict:
 
 def run_tool_calling_flow():
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="qwen/qwen3.8-max:free",
         max_tokens=1024,
         tools=tools,
         messages=[{"role": "user", "content": "How large is the context window of claude-sonnet-4-5?"}],
@@ -52,7 +52,7 @@ def run_tool_calling_flow():
         print(f"Tool called: {tool_name} with {tool_input} -> {result}")
 
         final = client.messages.create(
-            model="claude-sonnet-4-5",
+            model="qwen/qwen3.8-max:free",
             max_tokens=1024,
             tools=tools,
             messages=[

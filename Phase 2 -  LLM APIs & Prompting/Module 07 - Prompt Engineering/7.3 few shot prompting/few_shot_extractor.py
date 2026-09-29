@@ -1,4 +1,11 @@
-# 7.3 Few-Shot Prompting for Structured Extraction
+# 7.3 Few-Shot Prompting
+import anthropic, os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], base_url="https://api.xkiro.com")
+
 FEW_SHOT_SYSTEM = """You are a data extractor. Given a raw AI benchmark result string,
 extract: model name, task, and score as a JSON object.
 
@@ -20,6 +27,12 @@ test_inputs = [
     "Claude Opus 4.5 scored 96.7% on SWE-bench Verified",
 ]
 
-if __name__ == "__main__":
-    print("Few-Shot Template:")
-    print(FEW_SHOT_SYSTEM)
+for text in test_inputs:
+    resp = client.messages.create(
+        model="qwen/qwen3.8-max:free",
+        max_tokens=128,
+        system=FEW_SHOT_SYSTEM,
+        messages=[{"role": "user", "content": text}],
+    )
+    print(f"Input: {text}")
+    print(f"Output: {resp.content[0].text}\n")

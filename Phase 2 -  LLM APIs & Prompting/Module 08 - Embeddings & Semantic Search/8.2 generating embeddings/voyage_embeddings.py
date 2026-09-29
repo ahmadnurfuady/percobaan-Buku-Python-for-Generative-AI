@@ -1,19 +1,19 @@
-# 8.2 Generating Embeddings with Voyage AI (Anthropic recommended)
-import os
+# 8.2 Generating Embeddings - Anthropic embeddings (via Voyage AI)
+# pip install voyageai
+import voyageai, os
 import numpy as np
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def embed_texts_voyage(texts: list[str], model: str = "voyage-3") -> np.ndarray:
-    try:
-        import voyageai
-        vo = voyageai.Client(api_key=os.environ.get("VOYAGE_API_KEY", "mock-key"))
-        result = vo.embed(texts, model=model, input_type="document")
-        return np.array(result.embeddings, dtype=np.float32)
-    except ImportError:
-        print("Install voyageai via: pip install voyageai")
-        return np.zeros((len(texts), 1024), dtype=np.float32)
+vo = voyageai.Client(api_key=os.environ["VOYAGE_API_KEY"])
 
 if __name__ == "__main__":
-    print("Voyage AI embedding helper ready.")
+    result = vo.embed(
+        ["What is RAG?", "Explain vector databases."],
+        model="voyage-3",  # current recommended model
+        input_type="document",  # "document" for corpus, "query" for search queries
+    )
+    embeddings = np.array(result.embeddings, dtype=np.float32)
+    print(f"Shape: {embeddings.shape}")  # (2, 1024)
+    print(f"Token usage: {result.total_tokens}")

@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", "mock-key"))
+client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], base_url="https://api.xkiro.com")
 
 def call_with_system_prompt(system_instruction: str, user_question: str) -> str:
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="qwen/qwen3.8-max:free",
         max_tokens=512,
         system=system_instruction,
         messages=[{"role": "user", "content": user_question}],

@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "mock-key"))
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], base_url="https://api.xkiro.com/v1")
 
 def stream_openai_response(prompt: str):
     stream = client.chat.completions.create(
-        model="gpt-4o",
+        model="qwen/qwen3.8-max:free",
         max_tokens=512,
         stream=True,
         messages=[{"role": "user", "content": prompt}],

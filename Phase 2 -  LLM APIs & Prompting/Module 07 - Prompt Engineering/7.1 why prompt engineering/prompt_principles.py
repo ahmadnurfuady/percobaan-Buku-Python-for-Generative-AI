@@ -1,14 +1,22 @@
-# 7.1 Core Principles of Prompt Engineering
+# 7.1 Why Prompt Engineering Matters
 """
-Core principles:
-1. Be explicit - state format, tone, length, and constraints.
-2. Give examples - few-shot demonstrations improve accuracy.
-3. Think step by step - encourage intermediate reasoning.
-4. Separate concerns - system prompt for rules, user message for data.
+The core principles are:
+- Be explicit - state the format, tone, length, and constraints you want
+- Give examples - a few well-chosen examples beat long instructions
+- Think step by step - ask the model to reason before concluding
+- Separate concerns - put instructions in the system prompt, data in the user message
 """
 
 def print_principles():
-    print("Prompt Engineering is software engineering without code syntax errors.")
+    principles = [
+        "Be explicit - state the format, tone, length, and constraints you want",
+        "Give examples - a few well-chosen examples beat long instructions",
+        "Think step by step - ask the model to reason before concluding",
+        "Separate concerns - put instructions in the system prompt, data in the user message",
+    ]
+    print("Core Principles of Prompt Engineering:")
+    for p in principles:
+        print(f" - {p}")
 
 if __name__ == "__main__":
     print_principles()

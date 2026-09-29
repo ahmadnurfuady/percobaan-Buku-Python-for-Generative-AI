@@ -1,12 +1,15 @@
-# 7.2 System Prompts - Weak vs Strong
-import anthropic
-import os
+# 7.2 System Prompts
+import anthropic, os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], base_url="https://api.xkiro.com")
+
+# Poor system prompt - vague, no constraints
 WEAK_SYSTEM = "You are an AI assistant."
 
+# Strong system prompt - explicit role, rules, format
 STRONG_SYSTEM = """You are a senior Python engineer reviewing code for a production AI pipeline.
 Your job:
 - Identify bugs, security issues, and performance problems
@@ -21,13 +24,18 @@ Rules:
 Format:
 Return your review as a numbered list. Each item: Issue -> Impact -> Fix."""
 
-snippet = """
+messages = [
+    {"role": "user", "content": """Review this function:
 def get_user(user_id):
     key = os.getenv('DB_KEY')
     result = requests.get(f'http://db/{user_id}?key={key}')
-    return result.json()
-"""
+    return result.json()"""}
+]
 
-if __name__ == "__main__":
-    print("=== Strong System Prompt Definition ===")
-    print(STRONG_SYSTEM)
+response = client.messages.create(
+    model="qwen/qwen3.8-max:free",
+    max_tokens=1024,
+    system=STRONG_SYSTEM,
+    messages=messages,
+)
+print(response.content[0].text)

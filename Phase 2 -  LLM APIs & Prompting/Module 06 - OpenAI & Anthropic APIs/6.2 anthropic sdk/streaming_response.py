@@ -5,12 +5,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", "mock-key"))
+client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], base_url="https://api.xkiro.com")
 
 def stream_claude_response(prompt: str):
     """Stream tokens directly using stream context manager."""
     with client.messages.stream(
-        model="claude-sonnet-4-5",
+        model="qwen/qwen3.8-max:free",
         max_tokens=512,
         messages=[{"role": "user", "content": prompt}],
     ) as stream:

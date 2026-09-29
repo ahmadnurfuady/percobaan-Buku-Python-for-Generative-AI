@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "mock-key"))
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], base_url="https://api.xkiro.com/v1")
 
 tools = [
     {
@@ -35,7 +35,7 @@ def get_model_info(model_name: str) -> dict:
 def run_openai_tool_flow():
     messages = [{"role": "user", "content": "What is gpt-4o's context window?"}]
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="qwen/qwen3.8-max:free",
         tools=tools,
         messages=messages,
     )
@@ -52,7 +52,7 @@ def run_openai_tool_flow():
             "content": json.dumps(result),
         })
 
-        final = client.chat.completions.create(model="gpt-4o", messages=messages)
+        final = client.chat.completions.create(model="qwen/qwen3.8-max:free", messages=messages)
         print("Final output:", final.choices[0].message.content)
 
 if __name__ == "__main__":
