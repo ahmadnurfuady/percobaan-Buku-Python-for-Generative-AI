@@ -1,14 +1,26 @@
 # 10.4 VectorStoreIndex (Halaman 118-119)
 from llama_index.core import VectorStoreIndex, Document, Settings
-from llama_index.llms.openai import OpenAI
+from llama_index.llms.openai_like import OpenAILike
 from llama_index.embeddings.openai import OpenAIEmbedding
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-Settings.llm = OpenAI(model="gpt-4o", api_key=os.environ["OPENAI_API_KEY"])
-Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small", api_key=os.environ["OPENAI_API_KEY"])
+Settings.llm = OpenAILike(
+    model="qwen/qwen3.8-max:free",
+    api_key=os.environ["OPENAI_API_KEY"],
+    api_base="https://api.xkiro.com/v1",
+    is_chat_model=True,
+    temperature=0.1,
+    max_tokens=1024,
+)
+Settings.embed_model = OpenAIEmbedding(
+    model_name="nvidia/llama-nemotron-embed-vl-1b-v2:free",
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    api_base="https://openrouter.ai/api/v1",
+    check_embedding_ctx_length=False,
+)
 
 documents = [
     Document(text="RAG combines retrieval with generation to answer questions from external knowledge."),
