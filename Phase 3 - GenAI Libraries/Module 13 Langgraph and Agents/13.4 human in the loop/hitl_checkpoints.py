@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print("Plan:", state["plan"])
     print("Waiting for human approval...")
 
-    # Human approves and resumes
-    state["approved"] = True
-    final = app.invoke(state, config=config)
+    # Human approves and resumes (update checkpoint state and resume)
+    app.update_state(config, {"approved": True})
+    final = app.invoke(None, config=config)
     print("Result:", final["result"])

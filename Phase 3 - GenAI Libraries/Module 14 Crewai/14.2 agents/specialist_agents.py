@@ -1,12 +1,19 @@
 # 14.2 Agents (Halaman 153-154)
-from crewai import Agent
-from langchain_openai import ChatOpenAI
+from crewai import Agent, LLM
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = ChatOpenAI(model="gpt-4o", api_key=os.environ["OPENAI_API_KEY"])
+api_key = os.environ.get("OPENAI_API_KEY")
+if api_key and api_key.startswith("sk-xt-"):
+    llm = LLM(
+        model="openai/qwen/qwen3.8-max:free",
+        api_key=api_key,
+        base_url="https://api.xkiro.com/v1",
+    )
+else:
+    llm = "gpt-4o"
 
 researcher = Agent(
     role="AI Research Analyst",

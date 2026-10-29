@@ -67,9 +67,15 @@ TOOL_SCHEMAS = [
 class ReActState(TypedDict):
     messages: Annotated[list, operator.add]
 
+# Gunakan endpoint xkiro jika API key sk-xt (sebagaimana modul 9 & 10) atau OpenAI default
+api_key = os.environ.get("OPENAI_API_KEY")
+base_url = "https://api.xkiro.com/v1" if api_key and api_key.startswith("sk-xt-") else None
+model = "qwen/qwen3.8-max:free" if api_key and api_key.startswith("sk-xt-") else "gpt-4o"
+
 llm = ChatOpenAI(
-    model="gpt-4o",
-    api_key=os.environ["OPENAI_API_KEY"],
+    model=model,
+    api_key=api_key,
+    base_url=base_url,
 ).bind_tools(TOOL_SCHEMAS)
 
 SYSTEM = SystemMessage(content="""You are a helpful AI assistant with access to two tools:

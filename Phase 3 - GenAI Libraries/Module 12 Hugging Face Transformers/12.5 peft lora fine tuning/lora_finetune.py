@@ -46,7 +46,7 @@ tokenized = tokenized.map(lambda x: {"labels": x["input_ids"]})
 
 # 4. Training arguments
 training_args = TrainingArguments(
-    output_dir="/tmp/lora_output",
+    output_dir="./lora_output",
     num_train_epochs=3,
     per_device_train_batch_size=2,
     gradient_accumulation_steps=4,
@@ -65,7 +65,17 @@ if __name__ == "__main__":
     )
     trainer.train()
 
-    # Save adapter only
-    peft_model.save_pretrained("/tmp/lora_adapter")
-    tokenizer.save_pretrained("/tmp/lora_adapter")
-    print("LoRA adapter saved to /tmp/lora_adapter.")
+    # 6. Save adapter only (small file, not the full model)
+    peft_model.save_pretrained("./lora_adapter")
+    tokenizer.save_pretrained("./lora_adapter")
+    print("LoRA adapter saved to ./lora_adapter.")
+
+    # 7. Load adapter for inference (Buku Halaman 142-143)
+    base = AutoModelForCausalLM.from_pretrained(model_name)
+    merged = PeftModel.from_pretrained(base, "./lora_adapter")
+    merged.eval()
+    inputs = tokenizer("Question: What is RAG? Answer:", return_tensors="pt")
+    with torch.no_grad():
+        out = merged.generate(**inputs, max_new_tokens=30, pad_token_id=tokenizer.eos_token_id)
+    print("\nInference with fine-tuned adapter:")
+    print(tokenizer.decode(out[0], skip_special_tokens=True))

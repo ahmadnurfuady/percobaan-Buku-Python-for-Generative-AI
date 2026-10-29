@@ -1,21 +1,25 @@
 # 11.2 ChromaDB (Halaman 125-128)
 import chromadb
 from chromadb.config import Settings
-import numpy as np
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
-openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# Gunakan OpenRouter jika tersedia di .env (sebagaimana modul sebelumnya) atau OpenAI default
+api_key = os.environ.get("OPENROUTER_API_KEY") or os.environ.get("OPENAI_API_KEY")
+base_url = "https://openrouter.ai/api/v1" if os.environ.get("OPENROUTER_API_KEY") else None
+embed_model = "nvidia/llama-nemotron-embed-vl-1b-v2:free" if os.environ.get("OPENROUTER_API_KEY") else "text-embedding-3-small"
+
+openai_client = OpenAI(api_key=api_key, base_url=base_url)
 
 def embed(texts: list[str]) -> list[list[float]]:
-    resp = openai_client.embeddings.create(model="text-embedding-3-small", input=texts)
+    resp = openai_client.embeddings.create(model=embed_model, input=texts)
     return [e.embedding for e in sorted(resp.data, key=lambda x: x.index)]
 
 # Persistent client (saves to disk)
-client = chromadb.PersistentClient(path="/tmp/chroma_db")
+client = chromadb.PersistentClient(path="./chroma_db")
 
 # Get or create a collection
 collection = client.get_or_create_collection(
@@ -36,7 +40,8 @@ metadatas = [{"category": "technique", "index": i} for i in range(len(documents)
 
 if __name__ == "__main__":
     embeddings = embed(documents)
-    collection.add(
+    # Gunakan upsert agar aman jika dijalankan berulang kali
+    collection.upsert(
         ids=ids,
         documents=documents,
         embeddings=embeddings,
@@ -77,5 +82,8 @@ if __name__ == "__main__":
     )
 
     # Delete a document
-    collection.delete(ids=["doc_4"])
+    try:
+        collection.delete(ids=["doc_4"])
+    except Exception:
+        pass
     print(f"After delete, count: {collection.count()}")
